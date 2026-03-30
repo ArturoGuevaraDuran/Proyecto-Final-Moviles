@@ -1,8 +1,8 @@
 from django.contrib import admin
-from django.urls import path
-from rest_framework.authtoken import views # Importamos la vista mágica de los tokens
+from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/login/', views.obtain_auth_token, name='api_login'), # Creamos la ruta
+    # Aquí le decimos a Django: "Todo lo que empiece con api/, búscalo en api.urls"
+    path('api/', include('api.urls')),
 ]
