@@ -1,7 +1,24 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from datetime import date
 import uuid
 
+# 1. Catálogo de Facultades
+class Facultad(models.Model):
+    nombre = models.CharField(max_length=150, unique=True) # Ej: Facultad de Ciencias de la Computación
+
+    def __str__(self):
+        return self.nombre
+
+# 2. Catálogo de Carreras
+class Carrera(models.Model):
+    nombre = models.CharField(max_length=150) # Ej: Ingeniería en Tecnologías de la Información
+    facultad = models.ForeignKey(Facultad, on_delete=models.CASCADE, related_name='carreras')
+
+    def __str__(self):
+        return self.nombre
+
+# 3. Usuario Actualizado
 class Usuario(AbstractUser):
     ROLES = (
         ('ADMIN', 'Administrador'),
@@ -10,9 +27,25 @@ class Usuario(AbstractUser):
     )
     rol = models.CharField(max_length=10, choices=ROLES, default='ALUMNO')
     matricula = models.CharField(max_length=20, blank=True, null=True)
-    facultad = models.CharField(max_length=100, blank=True, null=True)
-    telefono = models.CharField(max_length=15, blank=True, null=True)
+    
+    # Nuevos campos fiscales/identidad
+    curp = models.CharField(max_length=18, blank=True, null=True, unique=True)
+    rfc = models.CharField(max_length=13, blank=True, null=True, unique=True)
     fecha_nacimiento = models.DateField(blank=True, null=True)
+    telefono = models.CharField(max_length=15, blank=True, null=True)
+    
+    # Relaciones foráneas a los catálogos
+    facultad = models.ForeignKey(Facultad, on_delete=models.SET_NULL, blank=True, null=True)
+    carrera = models.ForeignKey(Carrera, on_delete=models.SET_NULL, blank=True, null=True)
+
+    # Cálculo dinámico de la edad (No se guarda en la BD)
+    @property
+    def edad(self):
+        if self.fecha_nacimiento:
+            hoy = date.today()
+            # Resta los años y ajusta si el cumpleaños de este año aún no ha pasado
+            return hoy.year - self.fecha_nacimiento.year - ((hoy.month, hoy.day) < (self.fecha_nacimiento.month, self.fecha_nacimiento.day))
+        return None
 
     def __str__(self):
         return f"{self.username} - {self.get_rol_display()}"

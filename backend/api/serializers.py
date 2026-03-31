@@ -1,12 +1,25 @@
 from rest_framework import serializers
-from .models import Usuario, PuntoDistribucion, AsignacionOperador, MenuDiario, RegistroComida
+from .models import Usuario, PuntoDistribucion, AsignacionOperador, MenuDiario, RegistroComida, Facultad, Carrera
+
+class FacultadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Facultad
+        fields = '__all__'
+
+class CarreraSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Carrera
+        fields = '__all__'
 
 class UsuarioSerializer(serializers.ModelSerializer):
+    # Declaramos la edad para que el Serializer la extraiga de la @property
+    edad = serializers.ReadOnlyField() 
+    
     class Meta:
         model = Usuario
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'rol', 'matricula', 'facultad', 'telefono', 'fecha_nacimiento']
-        # Protegemos el password para que nunca se envíe al frontend
-        extra_kwargs = {'password': {'write_only': True}} 
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'rol', 'matricula', 
+                  'curp', 'rfc', 'fecha_nacimiento', 'edad', 'telefono', 'facultad', 'carrera']
+        extra_kwargs = {'password': {'write_only': True}}
 
 class PuntoDistribucionSerializer(serializers.ModelSerializer):
     class Meta:
