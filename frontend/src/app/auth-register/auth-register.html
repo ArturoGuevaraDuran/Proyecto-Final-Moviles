@@ -8,10 +8,15 @@
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
       
       <div class="input-group">
-        <label>Nombre Completo</label>
+        <label>Nombre(s)</label>
         <input type="text" formControlName="nombre" (input)="soloLetras($event, 'nombre')">
         <span class="error" *ngIf="registerForm.get('nombre')?.touched && registerForm.get('nombre')?.hasError('required')">El nombre es obligatorio.</span>
-        <span class="error" *ngIf="registerForm.get('nombre')?.touched && registerForm.get('nombre')?.hasError('pattern')">Formato inválido.</span>
+      </div>
+
+      <div class="input-group">
+        <label>Apellidos</label>
+        <input type="text" formControlName="apellidos" (input)="soloLetras($event, 'apellidos')">
+        <span class="error" *ngIf="registerForm.get('apellidos')?.touched && registerForm.get('apellidos')?.hasError('required')">Los apellidos son obligatorios.</span>
       </div>
 
       <div class="input-group">
@@ -22,21 +27,35 @@
       </div>
 
       <div class="input-group">
+        <label>CURP</label>
+        <input type="text" formControlName="curp" (input)="soloLetrasYNumeros($event, 'curp')" maxlength="18">
+        <span class="error" *ngIf="registerForm.get('curp')?.touched && registerForm.get('curp')?.hasError('required')">La CURP es obligatoria.</span>
+        <span class="error" *ngIf="registerForm.get('curp')?.touched && registerForm.get('curp')?.hasError('pattern')">Formato de CURP inválido.</span>
+      </div>
+
+      <div class="input-group">
+        <label>Fecha de Nacimiento</label>
+        <input type="date" formControlName="fecha_nacimiento" [max]="fechaMaxima">
+        <span class="error" *ngIf="registerForm.get('fecha_nacimiento')?.touched && registerForm.get('fecha_nacimiento')?.hasError('required')">La fecha de nacimiento es obligatoria.</span>
+      </div>
+      <div class="input-group">
         <label>Facultad</label>
-        <select formControlName="facultad" (change)="onFacultadChange($event)">
-          <option value="">Selecciona tu facultad...</option>
-          <option *ngFor="let fac of facultades" [value]="fac.nombre">{{ fac.nombre }}</option>
+        <select formControlName="facultad_id" (change)="onFacultadChange($event)" [disabled]="facultades.length === 0">
+          <option value="" *ngIf="facultades.length === 0">Cargando facultades...</option>
+          <option value="" *ngIf="facultades.length > 0">Selecciona tu facultad...</option>
+          <option *ngFor="let fac of facultades" [value]="fac.id">{{ fac.nombre }}</option>
         </select>
-        <span class="error" *ngIf="registerForm.get('facultad')?.touched && registerForm.get('facultad')?.hasError('required')">Selecciona una facultad.</span>
+        <span class="error" *ngIf="registerForm.get('facultad_id')?.touched && registerForm.get('facultad_id')?.hasError('required')">Selecciona una facultad.</span>
       </div>
 
       <div class="input-group">
         <label>Carrera</label>
-        <select formControlName="carrera">
-          <option value="">Selecciona tu carrera...</option>
-          <option *ngFor="let carrera of carrerasDisponibles" [value]="carrera">{{ carrera }}</option>
+        <select formControlName="carrera_id" [disabled]="carrerasDisponibles.length === 0">
+          <option value="" *ngIf="carrerasDisponibles.length === 0">Primero selecciona una facultad...</option>
+          <option value="" *ngIf="carrerasDisponibles.length > 0">Selecciona tu carrera...</option>
+          <option *ngFor="let carrera of carrerasDisponibles" [value]="carrera.id">{{ carrera.nombre }}</option>
         </select>
-        <span class="error" *ngIf="registerForm.get('carrera')?.touched && registerForm.get('carrera')?.hasError('required')">Selecciona una carrera.</span>
+        <span class="error" *ngIf="registerForm.get('carrera_id')?.touched && registerForm.get('carrera_id')?.hasError('required')">Selecciona una carrera.</span>
       </div>
 
       <div class="input-group">

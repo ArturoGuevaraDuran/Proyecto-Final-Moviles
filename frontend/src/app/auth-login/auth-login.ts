@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http'; 
-import { RouterLink } from '@angular/router'; 
+import { RouterLink, Router } from '@angular/router'; 
 
 /**
  * @description Componente de autenticación encargado de validar credenciales
@@ -21,6 +21,7 @@ export class AuthLoginComponent {
   
   /** @property Servicio inyectado para realizar peticiones HTTP */
   http = inject(HttpClient); 
+  router = inject(Router);
 
   constructor(private fb: FormBuilder) {
     // Definición de campos con validaciones mínimas de seguridad
@@ -49,13 +50,25 @@ export class AuthLoginComponent {
         /** Gestión de éxito: El servidor devuelve un objeto con el token */
         next: (response: any) => {
           console.log('¡Login Exitoso!', response);
-          alert('¡Funciona! Tu token es: ' + response.token);
-          // TODO: Implementar guardado en localStorage y redirección al Dashboard
+          localStorage.setItem('token', response.token);
+          localStorage.setItem('rol', response.rol);
+          localStorage.setItem('nombre', response.nombre);
+          localStorage.setItem('user_id', response.user_id);
+
+          // Redirección a la página principal del dashboard según el rol del usuario
+          if (response.rol === 'ADMIN') {
+            this.router.navigate(['/admin-panel']);
+          } else if (response.rol === 'OPERADOR') {
+            this.router.navigate(['/scanner']);
+          } else {
+            // Si es ALUMNO (o cualquier otro por defecto)
+            this.router.navigate(['/student-dashboard']);
+          }
         },
         /** Gestión de error: Credenciales no válidas o error de red */
         error: (err) => {
           console.error('Error al iniciar sesión', err);
-          alert('Credenciales incorrectas');
+          alert('Credenciales incorrectas o no existe el usuario. Por favor, inténtalo de nuevo.');
         }
       });
     }
