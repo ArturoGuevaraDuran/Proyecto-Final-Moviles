@@ -1,0 +1,43 @@
+<div class="dashboard-container">
+  <div class="header">
+    <h2>¡Hola, {{ nombreAlumno }}!</h2>
+    <p>Bienvenido al Comedor Universitario</p>
+  </div>
+
+  <div *ngIf="!reservaActiva">
+    <h3>Menú Disponible de Hoy</h3>
+    
+    <div *ngIf="menusDisponibles.length === 0" class="empty-state">
+      <p>Lo sentimos, hoy no hay menús disponibles o ya se agotaron.</p>
+    </div>
+
+    <div class="menu-card" *ngFor="let menu of menusDisponibles">
+      <div class="menu-info">
+        <h4>{{ menu.turno }}</h4>
+        <p class="desc">{{ menu.descripcion }}</p>
+        <span class="badge" [ngClass]="{'badge-alta': menu.estado_disponibilidad === 'ALTA', 'badge-media': menu.estado_disponibilidad === 'MEDIA', 'badge-baja': menu.estado_disponibilidad === 'BAJA'}">
+          Disponibilidad: {{ menu.estado_disponibilidad }}
+        </span>
+      </div>
+      <button class="btn-reservar" (click)="reservarComida(menu.id)">Reservar mi comida</button>
+    </div>
+  </div>
+
+  <div *ngIf="reservaActiva" class="qr-container">
+    <div class="qr-card">
+      <div class="qr-header">
+        <h3>Tu Código de Acceso</h3>
+        <p>Muéstralo al operador en tu punto de distribución.</p>
+      </div>
+      
+      <div class="qr-placeholder">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data={{ reservaActiva.codigo_qr }}" alt="Código QR Dinámico">
+      </div>
+
+      <div class="qr-details">
+        <p><strong>Estado:</strong> <span class="badge-reservado">{{ reservaActiva.estado }}</span></p>
+        <p class="qr-uuid">ID Cifrado: {{ reservaActiva.codigo_qr }}</p>
+      </div>
+    </div>
+  </div>
+</div>
