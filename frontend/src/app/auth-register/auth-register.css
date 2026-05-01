@@ -32,6 +32,70 @@
     font-size: 0.9em;
 }
 
+/* --- NUEVO: PESTAÑAS --- */
+.tabs-container {
+    display: flex;
+    background-color: #f3f4f6;
+    border-radius: 8px;
+    padding: 4px;
+    margin-bottom: 25px;
+}
+
+.tab-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 10px;
+    font-size: 0.95em;
+    font-weight: 600;
+    color: #6b7280;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 0;
+}
+
+.tab-btn:hover {
+    color: #111827;
+}
+
+.tab-btn.active {
+    background-color: white;
+    color: #3b82f6;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.codigo-group {
+    background-color: #eff6ff;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #3b82f6;
+    margin-bottom: 20px;
+}
+
+.codigo-group label {
+    font-weight: bold;
+    color: #1e3a8a;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.codigo-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+.codigo-group small {
+    display: block;
+    color: #3b82f6;
+    margin-top: 5px;
+    font-size: 0.85em;
+}
+/* ----------------------- */
+
 .input-group {
     margin-bottom: 15px;
     display: flex;
@@ -65,7 +129,7 @@
     margin-top: 4px;
 }
 
-button {
+button[type="submit"] {
     width: 100%;
     padding: 12px;
     background-color: #10b981;
@@ -79,7 +143,7 @@ button {
     margin-top: 10px;
 }
 
-button:hover {
+button[type="submit"]:hover {
     background-color: #059669;
 }
 

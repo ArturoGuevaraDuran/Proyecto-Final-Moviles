@@ -1,1 +1,95 @@
-<p>admin-panel works!</p>
+<div class="admin-layout">
+  
+  <aside class="sidebar">
+    <div class="brand">
+      <h2>Comedor BUAP</h2>
+      <span class="badge-admin">Panel de Control</span>
+    </div>
+
+    <nav class="nav-menu">
+      <button [class.active]="vistaActual === 'metricas'" (click)="cambiarVista('metricas')">
+         Métricas en Vivo
+      </button>
+      <button [class.active]="vistaActual === 'operadores'" (click)="cambiarVista('operadores')">
+         Logística de Operadores
+      </button>
+      <button [class.active]="vistaActual === 'soporte'" (click)="cambiarVista('soporte')">
+         Soporte al Alumno
+      </button>
+    </nav>
+
+    <div class="user-profile">
+      <p>Hola, <strong>{{ nombreAdmin }}</strong></p>
+      <a href="/login" class="logout-link">Cerrar Sesión</a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    
+    <div *ngIf="vistaActual === 'metricas'" class="module-container">
+      <h2>Monitor en Tiempo Real</h2>
+      <p class="subtitle">Resumen de la operación del día de hoy.</p>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>Total Reservas</h3>
+          <p class="stat-number blue">{{ estadisticas.totalReservas }}</p>
+        </div>
+        <div class="stat-card">
+          <h3>Comidas Entregadas</h3>
+          <p class="stat-number green">{{ estadisticas.entregadas }}</p>
+        </div>
+        <div class="stat-card">
+          <h3>Raciones Pendientes</h3>
+          <p class="stat-number orange">{{ estadisticas.pendientes }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="vistaActual === 'operadores'" class="module-container">
+      <h2>Gestión de Operadores</h2>
+      <p class="subtitle">Genera enlaces de invitación seguros para el personal.</p>
+
+      <div class="action-card">
+        <h3>Nuevo Operador</h3>
+        <p>Genera un código único de un solo uso para que un operador pueda crear su cuenta.</p>
+        <button class="btn-primary" (click)="generarCodigoOperador()">Generar Código de Invitación</button>
+        
+        <div *ngIf="codigoInvitacionGenerado" class="code-result">
+          <h4>Código Listo:</h4>
+          <code class="invite-code">{{ codigoInvitacionGenerado }}</code>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="vistaActual === 'soporte'" class="module-container">
+      <h2>Soporte y Resolución</h2>
+      <p class="subtitle">Busca un alumno por matrícula para gestionar sus QR o paquetes.</p>
+
+      <div class="search-bar">
+        <input type="text" [(ngModel)]="busquedaMatricula" placeholder="Ej. 202294250" maxlength="9">
+        <button class="btn-search" (click)="buscarAlumno()">Buscar Alumno</button>
+      </div>
+
+      <div *ngIf="alumnoEncontrado" class="student-card">
+        <div class="student-header">
+          <h3>{{ alumnoEncontrado.nombre }}</h3>
+          <span class="status-badge" [ngClass]="alumnoEncontrado.estadoQR">{{ alumnoEncontrado.estadoQR }}</span>
+        </div>
+        
+        <div class="student-details">
+          <p><strong>Comidas Mensuales Restantes:</strong> {{ alumnoEncontrado.comidasRestantesMensuales }}</p>
+          
+          <div class="admin-actions">
+            <button class="btn-danger" *ngIf="alumnoEncontrado.estadoQR === 'RESERVADO'" (click)="cancelarReserva(1)">
+              Cancelar QR y Liberar Ración
+            </button>
+            <button class="btn-outline">Recargar Paquete Mensual</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+</div>

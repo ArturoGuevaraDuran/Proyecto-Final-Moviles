@@ -1,0 +1,115 @@
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f3f4f6;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 260px;
+  background-color: #1f2937;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+.brand {
+  padding: 20px;
+  border-bottom: 1px solid #374151;
+}
+
+.brand h2 { margin: 0 0 5px 0; color: #f9fafb; }
+.badge-admin { background: #3b82f6; font-size: 0.7em; padding: 4px 8px; border-radius: 4px; font-weight: bold;}
+
+.nav-menu {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0;
+  flex-grow: 1;
+}
+
+.nav-menu button {
+  background: none;
+  border: none;
+  color: #d1d5db;
+  text-align: left;
+  padding: 15px 20px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.nav-menu button:hover { background-color: #374151; color: white;}
+.nav-menu button.active { background-color: #3b82f6; color: white; border-left: 4px solid #93c5fd;}
+
+.user-profile {
+  padding: 20px;
+  border-top: 1px solid #374151;
+  font-size: 0.9em;
+}
+
+.logout-link { color: #ef4444; text-decoration: none; display: inline-block; margin-top: 5px;}
+.logout-link:hover { text-decoration: underline;}
+
+/* MAIN CONTENT */
+.main-content {
+  flex-grow: 1;
+  padding: 40px;
+  overflow-y: auto;
+}
+
+.module-container h2 { margin-top: 0; color: #111827; }
+.subtitle { color: #6b7280; margin-bottom: 30px; }
+
+/* GRID METRICAS */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.stat-card {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  text-align: center;
+}
+
+.stat-card h3 { margin: 0; color: #6b7280; font-size: 1em; }
+.stat-number { font-size: 3em; font-weight: bold; margin: 10px 0 0 0; }
+.blue { color: #3b82f6; }
+.green { color: #10b981; }
+.orange { color: #f59e0b; }
+
+/* TARJETAS DE ACCION */
+.action-card, .student-card {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  max-width: 600px;
+}
+
+.btn-primary, .btn-search {
+  background-color: #3b82f6; color: white; border: none; padding: 12px 20px;
+  border-radius: 8px; cursor: pointer; font-weight: bold;
+}
+
+.code-result { margin-top: 20px; padding: 15px; background: #f0fdf4; border: 1px dashed #22c55e; border-radius: 8px; text-align: center;}
+.invite-code { font-size: 1.5em; font-weight: bold; color: #15803d; letter-spacing: 2px;}
+
+/* BUSCADOR Y SOPORTE */
+.search-bar { display: flex; gap: 10px; margin-bottom: 20px; max-width: 600px;}
+.search-bar input { flex-grow: 1; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1em;}
+
+.student-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e7eb; padding-bottom: 15px;}
+.status-badge { padding: 5px 10px; border-radius: 20px; font-size: 0.8em; font-weight: bold;}
+.RESERVADO { background: #fef08a; color: #854d0e; }
+.CANCELADO { background: #fee2e2; color: #991b1b; }
+
+.admin-actions { display: flex; gap: 10px; margin-top: 20px;}
+.btn-danger { background-color: #ef4444; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer;}
+.btn-outline { background: transparent; color: #3b82f6; border: 1px solid #3b82f6; padding: 10px 15px; border-radius: 6px; cursor: pointer;}

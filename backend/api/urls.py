@@ -1,6 +1,6 @@
 from django.urls import path
 
-from api.views.admin_views import InvitarOperadorView
+from api.views.admin_views import GenerarTokenOperadorView, AdminMetricasView
 from api.views.operadores_views import EscanearQRView
 from .views.auth_views import CatalogosView, LoginView, RegistroAlumnoView, RegistroOperadorView
 from .views.alumnos_views import MenuDisponibleView, ReservarComidaView
@@ -20,7 +20,8 @@ urlpatterns = [
     path('operadores/escanear/', EscanearQRView.as_view(), name='api-operadores-escanear'),
     
     # Admin
-    path('admin/invitar-operador/', InvitarOperadorView.as_view(), name='api-admin-invitar'),
+    path('admin/metricas/', AdminMetricasView.as_view(), name='admin-metricas'),
+    path('admin/generar-token/', GenerarTokenOperadorView.as_view(), name='admin-generar-token'),
     
     # Carreras / Facultades
     path('catalogos/', CatalogosView.as_view(), name='api-catalogos'),
