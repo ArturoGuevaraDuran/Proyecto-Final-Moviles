@@ -5,10 +5,10 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from rest_framework import status
 from django.core.signing import TimestampSigner, SignatureExpired, BadSignature
-from ..models import Carrera, Facultad, Usuario
+from ..models import Carrera, Facultad, Usuario, InvitacionOperador
 
 class CatalogosView(APIView):
-    permission_classes = [] # Público, para que Angular arme el formulario de registro
+    permission_classes = []
 
     def get(self, request):
         facultades = Facultad.objects.all()
@@ -24,7 +24,6 @@ class LoginView(APIView):
     permission_classes = [] 
 
     def post(self, request):
-        # Angular nos manda 'username' y 'password' (recordemos que el frontend mapeó el email/matrícula a username)
         username = request.data.get('username')
         password = request.data.get('password')
 
@@ -61,15 +60,14 @@ class RegistroAlumnoView(APIView):
         password = request.data.get('password')
         matricula = request.data.get('matricula')
 
-        # 1. Validación de negocio: Correo institucional
+        # Validación Correo institucional
         if not email or not email.endswith('@alumno.buap.mx'):
             return Response({"error": "Debe usar un correo institucional @alumno.buap.mx"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # 2. Validación: Que no exista ya
+        # Validación Que no exista ya
         if Usuario.objects.filter(username=email).exists() or Usuario.objects.filter(email=email).exists():
             return Response({"error": "Este correo ya está registrado."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # 3. Crear el usuario ALUMNO (Usamos el email como username para facilitar el login)
         user = Usuario.objects.create_user(
             username=email,
             email=email,
@@ -87,39 +85,44 @@ class RegistroAlumnoView(APIView):
 
 
 class RegistroOperadorView(APIView):
-    # Público, pero protegido criptográficamente por el Token
+    # Público, porque apenas se van a registrar
     permission_classes = [] 
 
     def post(self, request):
-        token_invitacion = request.data.get('token')
-        password = request.data.get('password')
+        data = request.data
+        codigo_invitacion = data.get('codigo_invitacion')
+        email = data.get('email')
+        password = data.get('password')
 
-        if not token_invitacion or not password:
-            return Response({"error": "Faltan datos requeridos (token o password)."}, status=status.HTTP_400_BAD_REQUEST)
+        # Validar que vengan los datos esenciales
+        if not codigo_invitacion or not email or not password:
+            return Response({"error": "Faltan datos requeridos (código, email o contraseña)."}, status=status.HTTP_400_BAD_REQUEST)
 
-        signer = TimestampSigner()
-        try:
-            # Desencriptar el token, máximo 24 horas (86400 segundos) de validez
-            email = signer.unsign(token_invitacion, max_age=86400)
-        except SignatureExpired:
-            return Response({"error": "El enlace de invitación ha expirado (Tienen 24 horas de validez)."}, status=status.HTTP_400_BAD_REQUEST)
-        except BadSignature:
-            return Response({"error": "Token de invitación inválido o corrupto."}, status=status.HTTP_400_BAD_REQUEST)
+        # Validar que el código de invitación exista y no esté usado
+        invitacion = InvitacionOperador.objects.filter(codigo=codigo_invitacion, usado=False).first()
+        if not invitacion:
+            return Response({"error": "El código de invitación es inválido o ya fue utilizado."}, status=status.HTTP_400_BAD_REQUEST)
 
-        if Usuario.objects.filter(username=email).exists():
-            return Response({"error": "Este operador ya fue registrado anteriormente."}, status=status.HTTP_400_BAD_REQUEST)
+        # Validar que el correo no esté registrado previamente
+        if Usuario.objects.filter(username=email).exists() or Usuario.objects.filter(email=email).exists():
+            return Response({"error": "Este correo ya está registrado en el sistema."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Crear al operador
+        # Crear al operador con todos tus campos personalizados
         user = Usuario.objects.create_user(
             username=email,
             email=email,
             password=password,
-            first_name=request.data.get('nombre', ''),
-            last_name=request.data.get('apellidos', ''),
-            telefono=request.data.get('telefono', ''),
-            curp=request.data.get('curp'),                 # CURP del trabajador
-            rfc=request.data.get('rfc'),                   # ¡Aquí SÍ va el RFC!
-            fecha_nacimiento=request.data.get('fecha_nacimiento'),
+            first_name=data.get('nombre', ''),
+            last_name=data.get('apellidos', ''),
+            telefono=data.get('telefono', ''),
+            curp=data.get('curp', ''),
+            rfc=data.get('rfc', ''), 
+            fecha_nacimiento=data.get('fecha_nacimiento'),
             rol='OPERADOR'
         )
+
+        # Quemar el código para evitar que otro se registre con él
+        invitacion.usado = True
+        invitacion.save()
+
         return Response({"mensaje": "Operador configurado exitosamente. Ya puede iniciar sesión."}, status=status.HTTP_201_CREATED)

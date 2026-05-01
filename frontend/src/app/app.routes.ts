@@ -3,7 +3,7 @@ import { AuthLoginComponent } from './auth-login/auth-login';
 import { RegisterComponent } from './auth-register/auth-register'; 
 import { StudentDashboardComponent } from './dashboards/student-dashboard/student-dashboard';
 import { OperatorScannerComponent } from './dashboards/operator-scanner/operator-scanner';
-import { AdminPanelComponent } from './dashboards/admin-panel/admin-panel';
+import { AdminPanel } from './dashboards/admin-panel/admin-panel';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -11,5 +11,5 @@ export const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'student-dashboard', component: StudentDashboardComponent },
   { path: 'scanner', component: OperatorScannerComponent },
-  { path: 'admin-panel', component: AdminPanelComponent }
+  { path: 'admin-panel', component: AdminPanel },
 ];

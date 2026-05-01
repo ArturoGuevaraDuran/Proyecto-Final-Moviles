@@ -110,3 +110,11 @@ class RegistroComida(models.Model):
 
     def __str__(self):
         return f"Reserva {self.alumno.username} - {self.estado}"
+    
+class InvitacionOperador(models.Model):
+    codigo = models.CharField(max_length=50, unique=True)
+    usado = models.BooleanField(default=False)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.codigo} - {'Usado' if self.usado else 'Disponible'}"
